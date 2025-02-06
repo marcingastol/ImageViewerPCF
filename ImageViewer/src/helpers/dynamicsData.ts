@@ -21,12 +21,32 @@ export const getFileContent = (webApiURL: string,
     req.setRequestHeader("OData-MaxVersion", "4.0")
     req.setRequestHeader("OData-Version", "4.0")
     req.onreadystatechange = function () {
+        console.log("[ImageViewerPCF] this.readyState");
+        console.log(this.readyState);
         if (this.readyState === 4) {
             req.onreadystatechange = null;
+            console.log("[ImageViewerPCF] this.status");
+            console.log(this.status);
             if (this.status === 200 || this.status === 204) {
                 const base64ToString = atob(JSON.parse(req.responseText).value).toString()
-                const imgDataList = JSON.parse(base64ToString)
+
+                console.log("[ImageViewerPCF] base64ToString");
+                console.log(base64ToString);
+
+                const base64ToStringForm = base64ToString.slice(base64ToString.indexOf('['));
+
+                console.log("[ImageViewerPCF] base64ToStringForm");
+                console.log(base64ToStringForm);
+
+                const imgDataList = JSON.parse(base64ToStringForm)
+
+                console.log("[ImageViewerPCF] imgDataList");
+                console.log(imgDataList);
+
                 setImageRawData(imgDataList)
+
+                console.log("[ImageViewerPCF] imgDataList.length");
+                console.log(imgDataList.length);
                 
                 if (imgDataList.length == 0) {
                     setCurrentUIState("dropImage")
@@ -68,9 +88,13 @@ export const patchFileContent = (
     req.setRequestHeader("OData-MaxVersion", "4.0")
     req.setRequestHeader("OData-Version", "4.0")
     req.onreadystatechange = function () {
+        console.log(this.readyState);
         if (this.readyState === 4) {
             req.onreadystatechange = null;
+            console.log(this.status);
             if (this.status === 200 || this.status === 204) {
+                console.log(imageRawData);
+                console.log(imageRawData.length);
                 if (imageRawData.length == 0) {
                     setCurrentUIState("dropImage")
                 }
@@ -84,7 +108,8 @@ export const patchFileContent = (
             }
         }
     };
-
+    console.log(imageRawData);
+    console.log(JSON.stringify(imageRawData));
     req.send(JSON.stringify(imageRawData));
 }
 

@@ -53,6 +53,10 @@ export const ImageViewerWrapper: React.FC<ImageViewerWrapperProps> = ({ pcfConte
     const appendImage = (latestImageDataArray: imageRawData[]) => {
         console.log(`[ImageViewerPCF] Append Image with data ${latestImageDataArray}`)
         setCurrentUIState("loader")
+        console.log("[ImageViewerPCF] patchFileContent(webApiURL, latestImageDataArray, setCurrentUIState)")
+        console.log(webApiURL)
+        console.log(latestImageDataArray)
+        console.log(setCurrentUIState)
         patchFileContent(webApiURL, latestImageDataArray, setCurrentUIState)
         tempImageRawData.current = []
         setImageRawData(latestImageDataArray)
@@ -88,13 +92,16 @@ export const ImageViewerWrapper: React.FC<ImageViewerWrapperProps> = ({ pcfConte
 
     const handleFile = (fileList: FileList) => {
         setCurrentUIState("loader")
+        console.log("[ImageViewerPCF] newTempImageRawDataCount.current")
         newTempImageRawDataCount.current = fileList.length + tempImageRawData.current.length
+        console.log(newTempImageRawDataCount.current)
 
         Array.from(fileList).forEach(async (file: File) => {
             const data = await readFile(file)
 
             if (!['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'].includes(file.type)) {
                 messageBarText.current = "Invalid file type. Please upload an image file. Supported formats are JPEG, PNG, GIF, BMP and WebP."
+                console.log("[ImageViewerPCF] Invalid file type. Please upload an image file. Supported formats are JPEG, PNG, GIF, BMP and WebP.")
                 setCurrentUIState("messageBar")
                 return
             }
@@ -105,11 +112,14 @@ export const ImageViewerWrapper: React.FC<ImageViewerWrapperProps> = ({ pcfConte
             console.log(`[ImageViewerPCF] Total Size: ${totalSize}`)
             if (totalSize * 4 / 3 > 16000000) { // converting binary to base64 increases the size by 4/3
                 messageBarText.current = "Storage limit reached. The maximum total size is 12MB. Please try again with a smaller file."
+                console.log("[ImageViewerPCF] Storage limit reached. The maximum total size is 12MB. Please try again with a smaller file.")
                 setCurrentUIState("messageBar")
                 return
             }
 
             if (newTempImageRawDataCount.current == tempImageRawData.current.length) {
+                console.log(`[ImageViewerPCF] if (newTempImageRawDataCount.current == tempImageRawData.current.length) {`)
+                console.log(tempImageRawData.current)
                 appendImage(tempImageRawData.current)
             }
         });
